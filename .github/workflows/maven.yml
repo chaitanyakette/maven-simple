@@ -1,0 +1,40 @@
+job:
+  - name: MyFirstYAMLJob
+    vm-template: Basic Build VM Template
+       git:
+       - url: "https://github.com/chaitanyakette/maven-simple"
+        branch: master
+        repo-name: origin
+        steps:
+        - shell:
+          script: "echo Build Number: $BUILD_NUMBER"
+        - maven:
+          goals: clean install
+          pom-file: "pom.xml"
+        after:
+        - artifacts:
+          include: "employees-app/target/*"
+        settings:
+        - discard-old:
+            days-to-keep-build: 5
+            builds-to-keep: 10
+            days-to-keep-artifacts: 5
+            artifacts-to-keep: 10
+  - name: Send mail
+        if: always()
+        uses: dawidd6/action-send-mail@v2
+        with:
+        # mail server settings
+        server_address: smtp.gmail.com
+        server_port: 465
+        # user credentials
+        username: chaitmoun.9899@gmail.com
+        password: K@7013934956405
+        # email subject
+        subject: ${{ github.job }} job of ${{ github.repository }} has ${{ job.status }}
+        # email body as text
+        body: ${{ github.job }} job in worflow ${{ github.workflow }} of ${{ github.repository }} has ${{ job.status }}
+        # comma-separated string, send email to
+        to: ketthe405@gmail.com, chaitmoun@gmail.com
+        # from email name
+        from: Chaitanya Kette  
